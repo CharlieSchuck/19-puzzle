@@ -1,7 +1,7 @@
 //Charlie Schuck, 2022 -- NINETEEN.java
 //This program solves a "Nineteen" puzzle, using A* and a heuristic or IDS,
 //given an entered "problem state."
-//ADAPTED FROM DR. SIMON'S Eight.java --
+//ADAPTED FROM DR. SIMON'S Eight.java -- Heuristic changes Inspired by https://web.mit.edu/6.034/wwwbob/EightPuzzle.pdf
 //Due 2/11/22
 
 import java.util.Random;
@@ -170,6 +170,9 @@ public class Nineteen {
     //heuristic -- I will play around with this, and think of something in the coming days... Is there something better
     //than NY, given the extra edges? -- ALSO... since anything that has a -1 is already in place, we can just ignore
     //-1s in the goal and current position.
+
+    //So, after completing the first 5 examples, I found this article: https://web.mit.edu/6.034/wwwbob/EightPuzzle.pdf
+    //I'm going to try and implement a ""reversal penalty""
     public static int h(Nineteen r, Nineteen goal){
         byte[] rev = new byte[SIZE+1];
         int total = 0;
@@ -181,6 +184,20 @@ public class Nineteen {
         for(byte i = 0; i <= SIZE; i++){
             if(r.tiles[i] != 0 && r.tiles[i] != -1){
                 total += Math.abs(i % LENGTH - rev[r.tiles[i]] % LENGTH) + Math.abs(i / LENGTH - rev[r.tiles[i]] / LENGTH);
+                //now for the added reversal penalty -- basically if two adjacent tiles are occupying each other's space, add a penalty for each
+                if((rev[r.tiles[i]] == i - LENGTH) && (rev[r.tiles[i-LENGTH]] == i)){
+                    //if the tile you're supposed to be in, B, is above the tile you're in now, A, AND if the contents of tile B are supposed to be in tile A...
+                    total++;
+                }
+                else if((rev[r.tiles[i]] == i + LENGTH) && (rev[r.tiles[i + LENGTH]] == i)){
+                    total++;
+                }
+                else if((rev[r.tiles[i]] == i - 1) && (rev[r.tiles[i - 1]] == i)){
+                    total++;
+                }
+                else if((rev[r.tiles[i]] == i + 1) && (rev[r.tiles[i + 1]] == i)){
+                    total++;
+                }
             }
         }
         return total;
@@ -206,7 +223,7 @@ public class Nineteen {
             x.inFrontier = false;
             if(x.g + x.h > maxF){
                 maxF = x.g + x.h;
-                System.out.printf("%3d %10d %10d\n", maxF, frontier.size(), explored.size());
+                System.out.printf(" %3d      %10d        %10d\n", maxF, frontier.size(), explored.size());
             }
             if(x.state.equals(goal)){
                 printAnswer(x);
