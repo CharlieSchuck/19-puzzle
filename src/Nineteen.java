@@ -15,12 +15,12 @@ public class Nineteen {
     final static int SIZE = 35;
     final static int LENGTH = 6;
 
-    int tiles[];
-    int blankPos;
+    byte tiles[];
+    byte blankPos;
 
-    public Nineteen(int[] x){
+    public Nineteen(byte[] x){
         tiles = Arrays.copyOf(x, x.length);
-        for(int i = 0; i <= SIZE; i++){ //this just finds the blank tile in each state. Code should still work, so I'm keeping it.
+        for(byte i = 0; i <= SIZE; i++){ //this just finds the blank tile in each state. Code should still work, so I'm keeping it.
             if(tiles[i] == 0){
                 blankPos = i;
                 return;
@@ -28,7 +28,7 @@ public class Nineteen {
         }
     }
     //cool, another borrowed constructor. "arigatou gozaimasu"
-    public Nineteen(int tiles[], int blankPos){
+    public Nineteen(byte tiles[], byte blankPos){
         this.tiles = Arrays.copyOf(tiles, tiles.length);
         this.blankPos = blankPos;
     }
@@ -128,10 +128,10 @@ public class Nineteen {
 
     public static void main(String[] args){
         //I need not randomly generate anything.
-        int[] x = new int[SIZE+1];
+        byte[] x = new byte[SIZE+1];
         //let's construct our goal state... 0 in the first available space... 19 in the last.
-        int j = 0;
-        for(int i = 0; i < SIZE+1; i++){
+        byte j = 0;
+        for(byte i = 0; i < SIZE+1; i++){
             //we're going to do this the dumb way.
             if (i == 0 || i == 1 || i == 4 || i == 5 || i == 6 || i == 7 || i == 10 || i == 11 || i == 24 || i == 25
                     || i == 28 || i == 29 || i == 30 || i == 31 || i == 34 || i == 35) {
@@ -147,12 +147,12 @@ public class Nineteen {
         //now, let's construct our problem state.
         Scanner sc = new Scanner(System.in);
         System.out.println("Please enter your starting state, one number at a time, pressing ENTER after each entry.");
-        for (int i = 0; i < SIZE; i++) {
+        for (byte i = 0; i < SIZE; i++) {
             if (i == 0 || i == 1 || i == 4 || i == 5 || i == 6 || i == 7 || i == 10 || i == 11 || i == 24 || i == 25
                     || i == 28 || i == 29 || i == 30 || i == 31 || i == 34 || i == 35) {
                 x[i] = -1;
             } else {
-                x[i] = sc.nextInt();
+                x[i] = sc.nextByte();
             }
         }
         Nineteen r = new Nineteen(x);
@@ -171,14 +171,14 @@ public class Nineteen {
     //than NY, given the extra edges? -- ALSO... since anything that has a -1 is already in place, we can just ignore
     //-1s in the goal and current position.
     public static int h(Nineteen r, Nineteen goal){
-        int[] rev = new int[SIZE+1];
+        byte[] rev = new byte[SIZE+1];
         int total = 0;
-        int j = SIZE;
-        for(int i = 0; i <= SIZE; i++){
+        byte j = SIZE;
+        for(byte i = 0; i <= SIZE; i++){
             if(goal.tiles[i] != -1)
                 rev[goal.tiles[i]] = i;
         }
-        for(int i = 0; i <= SIZE; i++){
+        for(byte i = 0; i <= SIZE; i++){
             if(r.tiles[i] != 0 && r.tiles[i] != -1){
                 total += Math.abs(i % LENGTH - rev[r.tiles[i]] % LENGTH) + Math.abs(i / LENGTH - rev[r.tiles[i]] / LENGTH);
             }
