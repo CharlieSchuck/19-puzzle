@@ -4,7 +4,6 @@
 //ADAPTED FROM DR. SIMON'S Eight.java -- Heuristic changes Inspired by https://web.mit.edu/6.034/wwwbob/EightPuzzle.pdf
 //Due 2/11/22
 
-import java.util.Random;
 import java.util.Stack;
 import java.util.HashMap;
 import java.util.Arrays;
@@ -27,7 +26,7 @@ public class Nineteen {
             }
         }
     }
-    //cool, another borrowed constructor. "arigatou gozaimasu"
+
     public Nineteen(byte tiles[], byte blankPos){
         this.tiles = Arrays.copyOf(tiles, tiles.length);
         this.blankPos = blankPos;
@@ -157,9 +156,6 @@ public class Nineteen {
         }
         Nineteen r = new Nineteen(x);
         System.out.println(r);
-        //no need to shuffle this bad boy, I trust all the states you've provided are solvable.
-        //I know this can get dicey with memory usage, but I'm going to use astar... Not to flex or anything,
-        // but I have 64gb of ram.
 
         astar(r, goal);
         //ids(r, goal);
