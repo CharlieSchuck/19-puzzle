@@ -171,7 +171,7 @@ public class Nineteen {
     //than NY, given the extra edges? -- ALSO... since anything that has a -1 is already in place, we can just ignore
     //-1s in the goal and current position.
 
-    //So, after completing the first 5 examples, I found this article: https://web.mit.edu/6.034/wwwbob/EightPuzzle.pdf
+    //So, after completing the first 4 examples, I found this article: https://web.mit.edu/6.034/wwwbob/EightPuzzle.pdf
     //I'm going to try and implement a ""reversal penalty""
     public static int h(Nineteen r, Nineteen goal){
         byte[] rev = new byte[SIZE+1];
@@ -203,7 +203,7 @@ public class Nineteen {
         return total;
     }
 
-    //the actual astar algorithm... shouldn't need any changes from me... same with IndexMinPQ
+    //the actual astar algorithm.
     public static int astar(Nineteen start, Nineteen goal){
         System.out.println(" |moves|   |nodes in frontier|  |explored nodes|");
         int maxF = 0;
@@ -214,7 +214,7 @@ public class Nineteen {
         HashMap<Nineteen, Node> explored = new HashMap<>();
         explored.put(start, z);
 
-        while(true){ //dangerous.
+        while(true){
             if(frontier.isEmpty()){
                 return 0; // failure
             }
@@ -266,10 +266,11 @@ public class Nineteen {
         System.out.println((numMoves-1) + " moves.");
     }
 
-    //----- looks like copy/paste might work.
+    //----- it looks like I'll have to improve these if I want to use them for #6
+    //maybe multi-threading?
 
     public static int ids(Nineteen r, Nineteen goal){
-        for(int limit=0;;limit++) {
+        for(int limit=0;;limit += 4) {
             System.out.println(limit + " ");
             int result = bdfs(r, goal, limit);
             if(result != 1) {
@@ -291,6 +292,7 @@ public class Nineteen {
             for(int i=0; i<4; i++) {
                 if(r.moveActions[i].valid()) {
                     r.moveActions[i].move();
+
                     switch(bdfs(r, goal, limit-1)) {
                         case 1: cutoff = true; break;
                         case 2: return 2;
@@ -299,6 +301,7 @@ public class Nineteen {
                     r.moveActions[opp[i]].move();
                 }
             }
+
             return (cutoff ? 1 : 0);
         }
     }
