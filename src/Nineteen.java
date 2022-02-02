@@ -180,19 +180,15 @@ public class Nineteen {
         for(byte i = 0; i <= SIZE; i++){
             if(r.tiles[i] != 0 && r.tiles[i] != -1){
                 total += Math.abs(i % LENGTH - rev[r.tiles[i]] % LENGTH) + Math.abs(i / LENGTH - rev[r.tiles[i]] / LENGTH);
-                //now for the added reversal penalty -- basically if two adjacent tiles are occupying each other's space, add a penalty for each
-                if((rev[r.tiles[i]] == i - LENGTH) && (rev[r.tiles[i-LENGTH]] == i)){
-                    //if the tile you're supposed to be in, B, is above the tile you're in now, A, AND if the contents of tile B are supposed to be in tile A...
-                    total++;
-                }
-                else if((rev[r.tiles[i]] == i + LENGTH) && (rev[r.tiles[i + LENGTH]] == i)){
-                    total++;
-                }
-                else if((rev[r.tiles[i]] == i - 1) && (rev[r.tiles[i - 1]] == i)){
-                    total++;
-                }
-                else if((rev[r.tiles[i]] == i + 1) && (rev[r.tiles[i + 1]] == i)){
-                    total++;
+
+                //The same as the previous idea, but this time with the entire row/column.
+                for(int k = 0; k < LENGTH; k++){
+                    if((rev[r.tiles[i]] == (i % LENGTH) + (k*LENGTH)) && (rev[r.tiles[(i % LENGTH) + (k*LENGTH)]] == i)  && ((i % LENGTH) + (k*LENGTH) != i)){ //same column
+                        total+=1;
+                    }
+                    else if((rev[r.tiles[i]] == i - (i % LENGTH) + k) && (rev[r.tiles[i - (i % LENGTH) + k]] == i) && ((i - (i % LENGTH) + k) != i)){ //same row
+                        total+=1;
+                    }
                 }
             }
         }
@@ -262,11 +258,9 @@ public class Nineteen {
         System.out.println((numMoves-1) + " moves.");
     }
 
-    //----- it looks like I'll have to improve these if I want to use them for #6
-    //maybe multi-threading?
 
     public static int ids(Nineteen r, Nineteen goal){
-        for(int limit=0;;limit += 4) {
+        for(int limit=0;;limit += 1) {
             System.out.println(limit + " ");
             int result = bdfs(r, goal, limit);
             if(result != 1) {
